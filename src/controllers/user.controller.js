@@ -39,13 +39,12 @@ const registeredUser = asyncHandler( async (req, res) => {
 
     //const coverImageLocalPath = req.files?.coverImage[0]?.path
 
-    let coverImageLocalPath
+    let coverImageLocalPath;
     if(req.files && 
         Array.isArray(req.files.coverImage) && 
         req.files.coverImage.length > 0) {
         coverImageLocalPath = req.files.coverImage[0].path
     }
-
 
     if(!avatarLocaPath) {
         throw new ApiError(400, "Avatar image required")
@@ -53,6 +52,7 @@ const registeredUser = asyncHandler( async (req, res) => {
 
     const avatar = await uploadOnCloudinary(avatarLocaPath)
     const coverImage =  await uploadOnCloudinary(coverImageLocalPath)
+    
 
     if(!avatar){
         throw new ApiError(400, "Avatar image required")
@@ -64,7 +64,7 @@ const registeredUser = asyncHandler( async (req, res) => {
         password,
         email,
         avatar: avatar.url,
-        coverImage: coverImage.url || ""
+        coverImage: coverImage?.url || ""
     })
 
     const createdUser = await User.findOne(user._id).select("-password -refreshToken")
